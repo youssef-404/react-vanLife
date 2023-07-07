@@ -24,9 +24,10 @@ export default function About(){
                     Your van is ready.
                 </h3>
 
-                <div className="px-4 py-2 cursor-pointer text-lg hover:bg-black font-extrabold bg-black/90 rounded-md text-white ">
-                    <Link to="/van">Explore our vans</Link>
-                </div>
+                
+                <Link className="px-4 py-2 cursor-pointer text-lg hover:bg-black font-extrabold bg-black/90 rounded-md text-white "
+                 to="/vans">Explore our vans</Link>
+                
             
             </div>
         </div>
