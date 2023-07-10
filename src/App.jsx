@@ -15,6 +15,8 @@ import Details from './pages/Host/vans/Details';
 import Pricing from './pages/Host/vans/Pricing';
 import Photos from './pages/Host/vans/Photos';
 import NotFound from './pages/NotFound';
+import Login from './pages/Login';
+import AuthRequired from './component/AuthRequired';
 
 export default function App() {
   return (
@@ -27,19 +29,23 @@ export default function App() {
             <Route path='about' element={<About />} />
             <Route path='vans' element={<Vans />} />
             <Route path='vans/:id' element={<VanDetails />} />
+            <Route path='login' element={<Login/>} />
             
-            <Route path="host" element={<HostLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="income" element={<Income />} />
-              <Route path='vans' element={<HostVans/>}/>
-              <Route path='vans/:id' element={<HostVanDetails/>}>
-                <Route index element={<Details/>} />
-                <Route path='pricing' element={<Pricing/>} />
-                <Route path='photos' element={<Photos/>} />
+            <Route element={<AuthRequired/>}>
+              <Route path="host" element={<HostLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="income" element={<Income />} />
+                <Route path='vans' element={<HostVans/>}/>
+
+                <Route path='vans/:id' element={<HostVanDetails/>}>
+                  <Route index element={<Details/>} />
+                  <Route path='pricing' element={<Pricing/>} />
+                  <Route path='photos' element={<Photos/>} />
+                </Route>
+
+                <Route path="reviews" element={<Reviews />} />
+                  
               </Route>
-              <Route path="reviews" element={<Reviews />} />
-              
-                
             </Route>
 
             <Route path='*' element={<NotFound />} />

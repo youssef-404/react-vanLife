@@ -1,24 +1,32 @@
 import { Link, useLocation, useParams } from "react-router-dom"
 import React from "react"
 import {BiArrowBack} from "react-icons/bi"
+import {getVan} from "../../api"
 
 export default function VanDetails(){
     const [van,setVan] =React.useState({})
+    const [loading,setLoading] = React.useState(false)
+    const [error,setError] = React.useState(null)
     const location = useLocation()
-    const id =useParams().id
+    const {id}=useParams()
     let btnColor;
 
     
   
     React.useEffect(()=>{
           
-        async function getVan(){
-            const res = await fetch(`/api/vans/${id}`)
-            const data = await res.json()
-
-            setVan(data.vans)
+        async function loadVan(){
+            setLoading(true)
+            try{
+                const data = await getVan(id)
+                setVan(data)
+            }catch(err){
+                setError(err)
+            }finally{
+                setLoading(false)
+            }
         }
-        getVan()
+        loadVan()
 
     },[id])
     
@@ -35,7 +43,13 @@ export default function VanDetails(){
     const wordSearch = search.length>1 ? van.type : "all"
     
 
+    if(loading){
+        return <h1>Loading ...</h1>
+    }
 
+    if(error){
+        return <h1>There was an error : {error.message}</h1>
+    }
     
     return(
         <div className="m-8">

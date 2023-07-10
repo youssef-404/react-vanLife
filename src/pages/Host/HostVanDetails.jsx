@@ -1,22 +1,29 @@
 import React from "react"
 import { NavLink,Link ,useParams, Outlet } from "react-router-dom"
 import { BiArrowBack } from "react-icons/bi"
-
+import { getVan } from "../../api"
 
 export default function HostVanDetails(){
     const [van,setVan] =React.useState({})
-    const id =useParams().id
+    const [loading, setLoading] = React.useState(false)
+    const [error, setError] = React.useState(null)
+    const {id} =useParams()
     let btnColor
   
     React.useEffect(()=>{
           
-        async function getVan(){
-            const res = await fetch(`/api/vans/${id}`)
-            const data = await res.json()
-
-            setVan(data.vans)
+        async function loadVans() {
+            setLoading(true)
+            try {
+                const data = await getVan(id)
+                setVan(data)
+            } catch (err) {
+                setError(err)
+            } finally {
+                setLoading(false)
+            }
         }
-        getVan()
+        loadVans()
 
         },[id])
     
@@ -28,6 +35,17 @@ export default function HostVanDetails(){
             btnColor="bg-[#161616]"
         }
         
+
+
+
+    if (loading) {
+        return <h1>Loading...</h1>
+    }
+
+    if (error) {
+        return <h1>There was an error: {error.message}</h1>
+    }
+
         return(
             <div className="m-8">
                 <Link className="mb-8 flex items-center hover:underline"

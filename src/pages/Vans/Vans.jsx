@@ -1,34 +1,48 @@
 import React from "react"
 import Card from "../../component/Card"
-import { Link, useSearchParams } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
+import { getVans } from "../../api"
 
 export default function Vans(){
 
     const [searchParams,setSearchParams] = useSearchParams()
     const [vans,setVans] = React.useState([])
+    const [loading,setLoading] = React.useState(false)
+    const [error,setError] = React.useState(null)
 
     const typeFilter = searchParams.get("type")
 
-    React.useEffect(function(){
-        async function getData(){
-            const res = await fetch("/api/vans")
-            const data = await res.json()
-            
-            setVans(data.vans)
+    React.useEffect(()=>{
+        async function loadVans(){
+            setLoading(true)
+            try{
+                const data = await getVans()
+                setVans(data)
+            }catch(err){
+                setError(err)
+            }finally{
+                setLoading(false)
+            }
         }
-        getData()
+        loadVans()
     },[])
+
+   
 
     const filteredData =typeFilter ? vans.filter((van)=>van.type===typeFilter):vans
 
 
-    const vansElement = filteredData.map((van)=>{
+    const vansElement =filteredData.map((van)=>{
         return(
             <Card key={van.id} {...van} />
         )
     })
 
-    return(
+    if(error){
+        return <h1 className="text-2xl mt-8 text-center text-red-700">There was an error: {error.message}</h1>
+    }
+
+    return (
         <div className="flex flex-col items-center md:items-start mx-4 md:mx-16 my-8">
             <h1 className="mb-8 font-bold text-2xl text-center md:text-left md:text-4xl">Explore our van options</h1>
 
@@ -47,6 +61,7 @@ export default function Vans(){
                 >
                     luxury
                 </button>
+                
 
                 {
                     typeFilter && 
@@ -64,7 +79,10 @@ export default function Vans(){
             </div>
 
             <div className="flex flex-wrap gap-8 justify-center md:justify-start">
-                {vansElement}
+                {
+                    !loading ? vansElement :
+                    "Loading ..."
+                }
             </div>
         </div>
     )
