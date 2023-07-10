@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app"
 import { collection, doc, getDoc, getDocs, getFirestore, query, where } from "firebase/firestore/lite"
 
 
@@ -50,9 +50,6 @@ export async function getHostVans(){
     return vans
 }
 
-
-
-
 export async function loginUser(creds) {
     const res = await fetch("/api/login",
         { method: "post", body: JSON.stringify(creds) }
@@ -60,7 +57,8 @@ export async function loginUser(creds) {
     const data = await res.json()
 
     if (!res.ok) {
-        throw {
+        // eslint-disable-next-line
+        throw{
             message: data.message,
             statusText: res.statusText,
             status: res.status
